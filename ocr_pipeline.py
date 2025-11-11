@@ -2,6 +2,8 @@ from docling.document_converter import DocumentConverter
 import pdfplumber
 from typing import List, Tuple, Any, Dict
 import os
+from glob import glob
+from tqdm import tqdm
 
 def _reconstruct_text_from_chars(chars, y_line_thresh=2.0, x_gap_factor=0.45):
     """
@@ -228,7 +230,10 @@ def process_pdf_to_markdown(input_path: str, output_dir: str) -> None:
     
 
 if __name__ == "__main__":
-    input_pdf = "public_test_data/Public_286.pdf"
-    output_directory = "output_markdown"
-    process_pdf_to_markdown(input_pdf, output_directory)
+    file_paths = glob("input_test_data_final/*.pdf") 
+    output_directory = "output_markdown_final"
+    for input_pdf in tqdm(file_paths, desc="Processing PDFs"):
+        if os.path.exists(os.path.join(output_directory, os.path.basename(input_pdf) + ".md")):
+            continue
+        process_pdf_to_markdown(input_pdf, output_directory)
 
